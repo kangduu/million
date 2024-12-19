@@ -104,6 +104,7 @@ function pullLatestData() {
           local.unshift(...latest);
           writeDataJson(local);
 
+          // todo 返回数据，不处理缓存问题
           // update cache
           writeLocalFile(
             JSON.stringify(local),
