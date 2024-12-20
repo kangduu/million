@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { logError } = require("./log");
+const logger = require("./logger");
 
 /**
  * 异步读文件
@@ -10,13 +10,13 @@ function readLocalFile(filePath) {
     try {
       fs.readFile(filePath, "utf8", (error, data) => {
         if (error) {
-          logError(error);
+          logger.error(error);
           reject(error);
         }
         resolve(data);
       });
     } catch (error) {
-      logError(error);
+      logger.error(error);
       reject(error);
     }
   });
@@ -30,7 +30,7 @@ function readLocalFileSync(filePath) {
   try {
     return fs.readFileSync(filePath, "utf8");
   } catch (error) {
-    logError("File does not exist!");
+    logger.error("File does not exist!");
     return null;
   }
 }

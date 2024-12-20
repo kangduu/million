@@ -1,9 +1,9 @@
 const { readLocalFile } = require("./file");
-const { logSuccess, logError } = require("./log");
+const logger = require("./logger");
 const setFilePath = require("./path");
 
 readLocalFile(setFilePath("./", "log.t1st.js"))
   .then((data) => {
-    logSuccess(data);
+    logger.info(data);
   })
   .catch((error) => {});
