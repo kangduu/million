@@ -1,14 +1,17 @@
 {
-  "name": "permutation3",
+  "name": "million",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "node src/index.js",
-    "start": "nodemon src/index.js"
+    "lt": "node src/full-lottery.js",
+    "p3": "node src/full-p3.js",
+    "p5": "node src/full-p5.js",
+    "latest": "node src/latest.js",
+    "test": "nodemon src/test/index.js"
   },
-  "author": "",
+  "author": "kangduu",
   "license": "ISC",
-  "description": "",
+  "description": "get lottery data",
   "devDependencies": {
     "nodemon": "^3.1.9",
     "pino-pretty": "^13.0.0"

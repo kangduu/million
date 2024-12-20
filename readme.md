@@ -62,3 +62,7 @@ nodemon 会监听文件更改并自动重启应用程序。
 ### ES6 模块和 CommonJS 的差异
 
 Node.js 默认使用 CommonJS 模块系统，而 TypeScript 的模块可以是 ES6 或 CommonJS，可以通过配置 tsconfig.json 来控制。使用 `esModuleInterop: true` 可以帮助解决两者之间的兼容性问题。
+
+### Node Version
+
+- Node.js@20+
