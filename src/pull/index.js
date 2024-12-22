@@ -1,6 +1,6 @@
 const { fetchP5, fetchP3, fetchLottery } = require("./fetch");
 const logger = require("../utils/logger");
-const setFilePath = require("../utils/path");
+const getPathCWD = require("../utils/path");
 const { writeLocalFile } = require("../utils/file");
 
 /**
@@ -83,12 +83,9 @@ async function getP3FullData() {
       }
     );
 
-    writeLocalFile(JSON.stringify(list), setFilePath("../lib", "p3.json"));
+    writeLocalFile(JSON.stringify(list), getPathCWD("/src/lib/p3.json"));
 
-    writeLocalFile(
-      JSON.stringify(prize),
-      setFilePath("../lib", "p3-prize.json")
-    );
+    writeLocalFile(JSON.stringify(prize), getPathCWD("/src/lib/p3-prize.json"));
 
     logger.info("Permutation 3 Data Success!");
   } catch (error) {
@@ -125,7 +122,7 @@ async function getP5FullData() {
       }
     );
 
-    writeLocalFile(JSON.stringify(list), setFilePath("../lib", "p5.json"));
+    writeLocalFile(JSON.stringify(list), getPathCWD("/src/lib/p5.json"));
 
     logger.info("Permutation 5 Data Success!");
   } catch (error) {}
@@ -159,7 +156,7 @@ async function getLotteryFullData() {
       }
     );
 
-    writeLocalFile(JSON.stringify(list), setFilePath("../lib", "lottery.json"));
+    writeLocalFile(JSON.stringify(list), getPathCWD("/src/lib/lottery.json"));
 
     logger.info("Lottery Data Success!");
   } catch (error) {}

@@ -1,6 +1,6 @@
 const { readLocalFile } = require("../utils/file");
-const setFilePath = require("../utils/path");
+const getPathCWD = require("../utils/path");
 
-readLocalFile(setFilePath("./", "index.js"))
+readLocalFile(getPathCWD("./", "index.js"))
   .then((data) => {})
   .catch((error) => {});
