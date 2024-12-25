@@ -18,5 +18,8 @@
   },
   "dependencies": {
     "pino": "^9.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
