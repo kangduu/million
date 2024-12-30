@@ -7,7 +7,7 @@ const fs = require("fs");
  * @param {*} filename 文件名称
  * @returns
  */
-function getPathCWD(url, filename) {
+function getPathCWD(url) {
   const base = path.basename(url);
   const dir = path.dirname(url);
 

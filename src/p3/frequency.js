@@ -1,10 +1,9 @@
-const readJSONDataSource = require("../utils/readJSONDataSource");
-
+const readLocalP3Data = require("./read-local");
 const baseLotteryDrawResult = require("./base");
 const { LotteryDrawResult, T3, T2, T0 } = baseLotteryDrawResult();
 
 function setFrequencyZero(result) {
-  return { count: 0, times: [], lotteryDrawResult: result };
+  return { count: 0, times: [], result };
 }
 
 /**
@@ -12,20 +11,20 @@ function setFrequencyZero(result) {
  * @returns
  */
 function getAllResultFrequency() {
-  const dataSource = readJSONDataSource();
+  const dataSource = readLocalP3Data();
   const frequency = {};
-  dataSource.forEach(({ lotteryDrawResult, lotteryDrawTime }) => {
-    if (frequency[lotteryDrawResult]) {
-      frequency[lotteryDrawResult] = {
-        lotteryDrawResult,
-        count: frequency[lotteryDrawResult].count + 1,
-        times: [...frequency[lotteryDrawResult].times, lotteryDrawTime],
+  dataSource.forEach(({ result, time }) => {
+    if (frequency[result]) {
+      frequency[result] = {
+        result,
+        count: frequency[result].count + 1,
+        times: [...frequency[result].times, time],
       };
     } else {
-      frequency[lotteryDrawResult] = {
-        lotteryDrawResult,
+      frequency[result] = {
+        result,
         count: 1,
-        times: [lotteryDrawTime],
+        times: [time],
       };
     }
   });

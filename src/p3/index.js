@@ -2,7 +2,7 @@ const { getAllResultFrequency } = require("./frequency");
 
 /**
  * 次数统计
- * @returns
+ * @returns number[] seem as [max, ..., min]
  */
 function getFrequencyList() {
   const data = getAllResultFrequency();
@@ -14,13 +14,14 @@ function getFrequencyList() {
     }
   }
 
-  return Array.from(list);
+  const result = Array.from(list).sort((a, b) => b - a);
+  return result;
 }
 
 /**
  * 获取出现指定次数的结果
  * @param {*} frequency 出现次数
- * @returns
+ * @returns Array<{ count: number, times: string[], result: '' }>
  */
 function getCountNumber(frequency = 1) {
   const data = getAllResultFrequency();
@@ -38,7 +39,7 @@ function getCountNumber(frequency = 1) {
  * 找出 【出现次数 >= 最小次数 & 【出现次数 < 最大次数】 & 【当前年份】 未开出的号码推荐
  * @param {*} min 最小次数
  * @param {*} max 最大次数】
- * @returns
+ * @returns string[] seem as [ '4 8 9===16', '2 9 9===15', '4 8 8===15' ]
  */
 function getFrequencyAndLatestYear(
   min,
@@ -52,14 +53,14 @@ function getFrequencyAndLatestYear(
 
   for (const key in Result) {
     if (Object.prototype.hasOwnProperty.call(Result, key)) {
-      const { count, lotteryDrawResult, times } = Result[key];
+      const { count, result, times } = Result[key];
       if (
         count < max &&
         count >= min &&
         times[0] &&
         times[0].split("-")[0] !== CurrentYear
       ) {
-        recommend.push(`${lotteryDrawResult}${Connecter}${count}`);
+        recommend.push(`${result}${Connecter}${count}`);
       }
     }
   }
@@ -71,8 +72,8 @@ function getFrequencyAndLatestYear(
 
 /**
  * 查看指定号码的开奖历史数据
- * @param {*} target
- * @returns
+ * @param {*} target string
+ * @returns `{ count: number, times: string[], result: target }`
  */
 function getTargetFrequency(target) {
   const Result = getAllResultFrequency();

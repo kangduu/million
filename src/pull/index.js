@@ -74,7 +74,7 @@ function returnPartialP3Data(data) {
     return {
       pdf: drawPdfUrl,
       num: lotteryDrawNum,
-      p3: lotteryDrawResult,
+      result: lotteryDrawResult,
       time: lotteryDrawTime,
       sale: totalSaleAmount,
     };
@@ -143,7 +143,7 @@ async function getP3LatestData() {
 }
 
 /**
- * 返回排列三需要存储的数据
+ * 返回排列五需要存储的数据
  * @param {*} data
  * @returns
  */
@@ -164,7 +164,7 @@ function returnPartialP5Data(data) {
       stakeCount: prize ? prize.stakeCount : 0,
       pdf: drawPdfUrl,
       num: lotteryDrawNum,
-      p5: lotteryDrawResult,
+      result: lotteryDrawResult,
       time: lotteryDrawTime,
       sale: totalSaleAmount,
       pool: poolBalanceAfterdraw,
