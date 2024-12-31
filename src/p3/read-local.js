@@ -12,4 +12,17 @@ function readLocalP3Data() {
     return [];
   }
 }
-module.exports = readLocalP3Data;
+
+function readLocalP5Data() {
+  try {
+    const path = getPathCWD("/src/lib/p5.json");
+    let data = readLocalFileSync(path);
+    if (data) data = JSON.parse(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+module.exports = { readLocalP3Data, readLocalP5Data };
