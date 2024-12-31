@@ -1,68 +1,60 @@
-### 安装 TypeScript 和相关工具
+## 目录结构
 
 ```bash
-npm install typescript --save-dev
-npm install @types/node --save-dev
+├── src/
+│ ├── controllers/      # 控制器层
+│ │ └── userController.ts
+│ ├── models/           # 模型层
+│ │ └── userModel.ts
+│ ├── views/            # 视图层(如果需要)
+│ │ └── user/
+│ ├── routes/           # 路由配置
+│ │ └── userRoutes.ts
+│ ├── services/         # 业务逻辑层
+│ │ └── userService.ts
+│ ├── config/           # 配置文件
+│ │ └── database.ts
+│ ├── middlewares/      # 中间件
+│ │ └── auth.ts
+│ └── index.ts          # 入口文件
+├── package.json
+└── tsconfig.json
 ```
 
-### 编译 TypeScript 文件
+## 项目架构
 
-您可以使用 `TypeScript` 编译器（`tsc`）来编译您的 `TypeScript` 代码。使用以下命令：
+1. 控制器(Controllers)：
+   - 处理 HTTP 请求和响应
+   - 调用相应的 Service 层方法
+   - 返回响应给客户端
+2. 服务层(Services)：
+   - 包含业务逻辑
+   - 调用 Model 层进行数据操作
+   - 处理数据转换和验证
+3. 模型层(Models)：
+   - 定义数据结构
+   - 处理数据库操作
+   - 提供数据访问方法
+4. 路由(Routes)：
+   - 定义 API 端点
+   - 将请求映射到对应的控制器方法
+5. 中间件(Middlewares)：
+   - 处理认证授权
+   - 请求日志
+   - 错误处理等
 
-```bash
- npx tsc
-```
+## 这种结构的优势：
 
-这将根据 `tsconfig.json` 的配置将 `src` 目录中的 `TypeScript` 文件编译到 `dist` 目录中。
+- 代码组织清晰
+- 职责分离
+- 便于维护和测试
+- 提高代码复用性
+- 便于团队协作
 
-### 使用 ts-node
-
-为了避免每次手动编译 TypeScript，您可以使用`ts-node`来直接运行 TypeScript 文件。
-
-首先安装 `ts-node`：
-
-```bash
-npm install ts-node --save-dev
-```
-
-然后直接使用 `ts-node` 来运行 TypeScript 文件：
-
-```bash
-npx ts-node src/index.ts
-```
-
-这将直接执行 TypeScript 文件，而无需先编译成 JavaScript。
-
-### 配置 nodemon 自动重启
-
-如果您希望在修改代码后自动重新启动 Node.js 应用程序，可以使用 `nodemon` 配合`ts-node`。
-
-首先安装 `nodemon` 和 `ts-node`：
-
-```bash
-npm install nodemon --save-dev
-```
-
-然后在 `package.json` 中添加一个 `start` 脚本，使用 `nodemon` 来运行 `TypeScript` 文件：
-
-```json
-"scripts": {
-    "start": "nodemon --exec ts-node src/index.ts"
-}
-```
-
-现在，您可以通过运行以下命令来启动项目：
-
-```bash
-npm start
-```
-
-nodemon 会监听文件更改并自动重启应用程序。
-
-### ES6 模块和 CommonJS 的差异
+## ES6 模块和 CommonJS 的差异
 
 Node.js 默认使用 CommonJS 模块系统，而 TypeScript 的模块可以是 ES6 或 CommonJS，可以通过配置 tsconfig.json 来控制。使用 `esModuleInterop: true` 可以帮助解决两者之间的兼容性问题。
 
-### Node Version
+## Node Version
 
 - Node.js@20+
