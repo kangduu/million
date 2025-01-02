@@ -1,14 +1,14 @@
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+/// <reference types="../types/index.d.ts" />
 
 class UserModel {
   private users: User[] = [];
 
   async findAll(): Promise<User[]> {
     return this.users;
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    return this.users.find((user) => user.username === username) || null;
   }
 }
 

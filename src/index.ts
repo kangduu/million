@@ -5,9 +5,8 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import morgan from "morgan";
 
-// 路由
 import userRoutes from "./routes/userRoutes";
-import authRoutes from "./routes/authRoutes";
+import lotteryRoutes from "./routes/lotteryRoutes";
 
 // 加载环境变量
 dotenv.config();
@@ -27,10 +26,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 // API 版本前缀
-const API_VERSION = `/api/${process.env.VERSION}`;
+const API_VERSION_1 = `/api/${process.env.VERSION_1}`;
 
-// 路由
-app.use(`${API_VERSION}/user`, userRoutes);
+// API路由
+app.use(`${API_VERSION_1}/user`, userRoutes);
+app.use(`${API_VERSION_1}/lottery`, lotteryRoutes);
 
 // 全局错误处理中间件
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

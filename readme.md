@@ -1,7 +1,52 @@
-## 目录结构
+## 关于本项目的说明
+
+使用 `Webpack@5` + `React@19` + `Typescript@5` + `Node.js@20` + `Express@4` 技术，实现 React SSR 。
+
+主要学习以下知识点：
+
+1. 使用 `Webpack` 打包 `React SSR` 项目
+2. 使用 `Express` 搭建 `Node.js` 服务
+3. 使用 `Typescript` 编写 `Node.js` 项目
+4. 使用 `React Router` 实现前端路由
+5. 使用 `React Hooks` 实现组件逻辑
+6. 使用 `React Context` 实现组件状态管理
+7. 使用 `React Redux` 实现全局状态管理
+8. 使用 `React Suspense` 实现组件懒加载
+9. 使用 `React Error Boundaries` 实现组件错误处理
+10. 使用 `React Portals` 实现组件弹出层
+
+主要功能包括：
+
+1. 登录功能：JWT 验证、登录 Code 码验证
+2. 文件操作：文件上传、文件下载、大文件操作、多文件操作等
+3. Chart 图表功能：使用 `ECharts` 实现图表功能
+4. ......
+
+## Client Code
+
+### 目录结构
 
 ```bash
-├── src/
+├── src/client
+│ ├── views/
+│ │ ├── home.ts
+│ │ ├── about.ts
+│ │ ├── contact.ts
+│ │ └── ...
+│ ├── components/
+│ ├── utils/
+│ ├── App.tsx
+│ └── index.tsx
+├── package.json
+└── tsconfig.json
+```
+
+## Server Code
+
+### 目录结构
+
+```bash
+├── src/server
 │ ├── controllers/      # 控制器层
 │ │ └── userController.ts
 │ ├── models/           # 模型层
@@ -16,15 +61,17 @@
 │ │ └── database.ts
 │ ├── middlewares/      # 中间件
 │ │ └── auth.ts
+│ ├── utils/            # 工具函数
+│ │ └── jwt.ts
 │ └── index.ts          # 入口文件
 ├── package.json
 └── tsconfig.json
 ```
 
-## 项目架构
+### 项目架构
 
 1. 控制器(Controllers)：
-   - 处理 HTTP 请求和响应
+   - 处理 HTTP **请求和响应**
    - 调用相应的 Service 层方法
    - 返回响应给客户端
 2. 服务层(Services)：
@@ -43,7 +90,7 @@
    - 请求日志
    - 错误处理等
 
-## 这种结构的优势：
+### 这种结构的优势：
 
 - 代码组织清晰
 - 职责分离
