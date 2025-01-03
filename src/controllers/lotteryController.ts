@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import LotteryService from "../services/lotteryService";
 import { verifyToken } from "../utils/jwt";
+import logger from "../utils/logger";
 
-class UserController {
+class LotteryController {
   private lotteryService: LotteryService;
 
   constructor() {
@@ -12,16 +13,51 @@ class UserController {
   async getList(req: Request, res: Response) {
     try {
       const token = req.headers.authorization;
-      await verifyToken(token || "");
+      try {
+        await verifyToken(token || "");
+      } catch (error) {
+        res.status(401).json({ error: "Unauthorized. token is invalid" });
+        return;
+      }
 
       const page = req.body.page;
-      const pageSize = req.body.pageSize;
-      const users = await this.lotteryService.getList(page, pageSize);
-      res.json(users);
+      const pagesize = req.body.pagesize;
+      const type = req.body.type;
+
+      let data: any = [];
+      switch (type) {
+        case "p3":
+          data = await this.lotteryService.getP3List(page, pagesize);
+          break;
+
+        case "p5":
+          data = await this.lotteryService.getP5List(page, pagesize);
+          break;
+
+        case "lottery":
+          data = await this.lotteryService.getLotteryList(page, pagesize);
+          break;
+
+        default:
+          res.status(400).json({ error: "Invalid type" });
+          break;
+      }
+
+      logger.info(`get lottery data success: ${type}`);
+
+      res.status(200).json({
+        code: 200,
+        message: "success",
+        ...data,
+      });
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+      logger.error(error);
+      res.status(500).json({
+        code: 500,
+        message: "Internal server error",
+      });
     }
   }
 }
 
-export default new UserController();
+export default new LotteryController();

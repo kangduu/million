@@ -8,7 +8,7 @@
     "p5": "node src/full-p5.js",
     "latest": "node src/latest.js",
     "test": "nodemon  src/test/index.js",
-    "dev": "tsnd --respawn --clear src/index.ts"
+    "dev": "tsnd --respawn src/index.ts"
   },
   "author": "kangduu",
   "license": "ISC",
