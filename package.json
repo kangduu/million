@@ -7,8 +7,10 @@
     "p3": "node src/full-p3.js",
     "p5": "node src/full-p5.js",
     "latest": "node src/latest.js",
-    "test": "nodemon  src/test/index.js",
-    "dev": "tsnd --respawn src/index.ts"
+    "test": "nodemon --exec ts-node src/test/index.js",
+    "start": "nodemon --exec ts-node --files src/index.ts",
+    "dev": "tsnd --respawn --files src/index.ts",
+    "ts-check": "tsc --noEmit --skipLibCheck"
   },
   "author": "kangduu",
   "license": "ISC",
