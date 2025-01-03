@@ -15,4 +15,4 @@ declare namespace Lottery {
     pool: string;
     order: string;
   }
-}
+} 

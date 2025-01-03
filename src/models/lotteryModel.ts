@@ -1,4 +1,3 @@
-/// <reference types="../types/lottery.d.ts" />
 import readLocalData from "../utils/local";
 
 class LotteryModel {
