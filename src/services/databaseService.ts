@@ -3,20 +3,35 @@ import logger from "../utils/logger";
 import getPathCWD from "../utils/path";
 import { writeLocalFile } from "../utils/file";
 
+interface PrizeRecord {
+  prizeLevel: string;
+  stakeCount: string;
+  stakeAmount: string;
+  stakeAmountFormat: string;
+  totalPrizeamount: string;
+  sort: number;
+  awardType: number;
+  lotteryCondition: unknown;
+  group: unknown;
+}
+
+type PrizeData = Record<string, PrizeRecord[]>;
+
 interface RemoteData {
   drawPdfUrl: string;
   lotteryDrawNum: string;
   lotteryDrawResult: string;
   lotteryDrawTime: string;
   totalSaleAmount: string;
-  prizeLevelList: any[];
+  prizeLevelList: PrizeRecord[];
 }
 
 type FetchRequestFn<T> = (page: number) => Promise<T>;
 
+// 获取远端数据
 class FetchRemoteService {
-  private async pullOnePageData(url: string) {
-    return new Promise<RemoteData>((resolve, reject) => {
+  private async pullOnePageData<R>(url: string) {
+    return new Promise<R>((resolve, reject) => {
       https
         .get(url, function (res) {
           let words = "";
@@ -46,17 +61,19 @@ class FetchRemoteService {
 
   fetchP5: FetchRequestFn<RemoteData> = async (page: number) => {
     this.checkPageType(page);
-    return await this.pullOnePageData(this.requestUrl("350133", page));
+    return await this.pullOnePageData<RemoteData>(
+      this.requestUrl("350133", page)
+    );
   };
 
   fetchP3: FetchRequestFn<RemoteData> = async (page: number) => {
     this.checkPageType(page);
-    return await this.pullOnePageData(this.requestUrl("35", page));
+    return await this.pullOnePageData<RemoteData>(this.requestUrl("35", page));
   };
 
   fetchLottery: FetchRequestFn<RemoteData> = async (page: number) => {
     this.checkPageType(page);
-    return await this.pullOnePageData(this.requestUrl("85", page));
+    return await this.pullOnePageData<RemoteData>(this.requestUrl("85", page));
   };
 }
 
@@ -80,16 +97,19 @@ class FeatureService extends FetchRemoteService {
    * @param end 结束页
    * @returns Promise<result>
    */
-  async requestData<T>(request: FetchRequestFn<T>, end: number): Promise<T[]> {
+  async requestData<
+    T extends (...args: any[]) => any,
+    R = Awaited<ReturnType<T>>
+  >(request: T, end: number): Promise<R[]> {
     if (typeof request !== "function")
       throw Error("The request parameter is expected to be a function.");
 
     const delay = this.delay;
 
-    async function getData(page: number, result: T[] = []) {
+    async function getData(page: number, result: R[]) {
       logger.info(`Current Page : ${page}`);
 
-      return new Promise<T[]>(async (resolve, reject) => {
+      return new Promise<R[]>(async (resolve, reject) => {
         try {
           const { pages, pageNo, list } = await request(page);
 
@@ -116,7 +136,7 @@ class FeatureService extends FetchRemoteService {
       });
     }
 
-    return await getData(1);
+    return await getData(1, []);
   }
 }
 
@@ -130,7 +150,9 @@ class P3Service extends FeatureService {
    * @param {*} data 远端数据
    * @returns
    */
-  private returnPartialP3Data(data: RemoteData) {
+  private returnPartialP3Data(
+    data: Omit<RemoteData, "prizeLevelList">
+  ): Lottery.LotteryCommonData {
     try {
       const {
         drawPdfUrl,
@@ -148,7 +170,13 @@ class P3Service extends FeatureService {
         sale: totalSaleAmount,
       };
     } catch (error) {
-      return {};
+      return {
+        pdf: "",
+        num: "",
+        result: "",
+        time: "",
+        sale: "",
+      };
     }
   }
 
@@ -165,8 +193,11 @@ class P3Service extends FeatureService {
    */
   async getP3FullData() {
     try {
-      const data = await this.requestData<RemoteData>(this.fetchP3, 100);
-      const prize = {};
+      const data = await this.requestData<FetchRequestFn<RemoteData>>(
+        this.fetchP3,
+        100
+      );
+      const prize: PrizeData = {};
       const list = data.map(({ prizeLevelList, ...rest }: RemoteData) => {
         prize[rest.lotteryDrawNum] = prizeLevelList;
         return this.returnPartialP3Data(rest);
@@ -179,7 +210,7 @@ class P3Service extends FeatureService {
   }
 }
 
-class DatabaseService extends FetchRemoteService {
+class DatabaseService extends P3Service {
   constructor() {
     super();
   }
