@@ -1,13 +1,15 @@
-/// <reference types="../types/index.d.ts" />
-
 class UserModel {
-  private users: User[] = [];
+  private users: Account.UserBase[] = [
+    { id: 1, username: "admin", role: "admin" },
+    { id: 2, username: "test", role: "user" },
+    { id: 3, username: "user", role: "user" },
+  ];
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<Account.UserBase[]> {
     return this.users;
   }
 
-  async findByUsername(username: string): Promise<User | null> {
+  async findByUsername(username: string): Promise<Account.UserBase | null> {
     return this.users.find((user) => user.username === username) || null;
   }
 }

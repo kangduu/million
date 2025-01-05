@@ -1,5 +1,3 @@
-/// <reference types="../types/index.d.ts" />
-
 import jwt from "jsonwebtoken";
 import { createClient } from "redis";
 
@@ -7,7 +5,7 @@ import { createClient } from "redis";
 const redisClient = createClient();
 
 interface TokenPayload {
-  username: User["username"];
+  username: Account.UserBase["username"];
   tokenId: string; // 添加唯一标识
 }
 

@@ -1,8 +1,10 @@
 import lotteryModel from "../models/lotteryModel";
 
 class LotteryService {
+  constructor() {}
+  
   //  分页函数
-  pagination(page: number, pagesize: number) {
+  private pagination(page: number, pagesize: number) {
     if (page < 1) throw new Error("page must be greater than 0");
     if (pagesize < 1) throw new Error("pagesize must be greater than 0");
 

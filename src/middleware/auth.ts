@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
 
 export async function authMiddleware(
-  req: Request,
+  req: Request<{}, {}, {}, {}, Record<string, any>>,
   res: Response,
   next: NextFunction
 ) {

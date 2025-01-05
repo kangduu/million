@@ -7,12 +7,14 @@ import getPathCWD from "./path";
  * @param url 文件路径
  * @returns 本地数据
  */
-async function readLocalData<T>(url: string): Promise<T[] | null> {
-  let local: any = null;
+async function readLocalData<T>(url: string): Promise<T | null> {
+  let local: T | null = null;
   try {
-    local = await readLocalFile(getPathCWD(url));
-    if (local) local = JSON.parse(local as string);
-    else local = null;
+    let _local = await readLocalFile(getPathCWD(url));
+    if (_local) _local = JSON.parse(_local as string);
+    else _local = null;
+
+    local = _local as T;
   } catch (error) {
     logger.error(error);
   }
