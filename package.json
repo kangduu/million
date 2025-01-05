@@ -7,7 +7,7 @@
     "p3": "node src/full-p3.js",
     "p5": "node src/full-p5.js",
     "latest": "node src/latest.js",
-    "test": "nodemon --exec ts-node src/test/index.js",
+    "test": "npx jest",
     "start": "nodemon --exec ts-node --files src/index.ts",
     "dev": "tsnd --respawn --files src/index.ts",
     "ts-check": "tsc --noEmit --skipLibCheck"
@@ -22,6 +22,7 @@
     "@types/helmet": "^0.0.48",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.9",
     "pino-pretty": "^13.0.0",
     "ts-node-dev": "^2.0.0"
