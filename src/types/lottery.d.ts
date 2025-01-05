@@ -10,9 +10,14 @@ declare namespace Lottery {
     sale: string;
   }
 
+  interface LotteryP5Data extends LotteryCommonData {
+    stakeCount: string;
+    pool: string;
+  }
+
   // 大乐透开奖数据
   interface LotteryData extends LotteryCommonData {
     pool: string;
     order: string;
   }
-} 
+}
