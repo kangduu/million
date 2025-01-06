@@ -1,22 +1,9 @@
 import https from "https";
 import logger from "../utils/logger";
-import getPathCWD from "../utils/path";
-import { writeLocalFile } from "../utils/file";
 import readLocalData from "../utils/local";
-
-interface PrizeRecord {
-  prizeLevel: string;
-  stakeCount: string;
-  stakeAmount: string;
-  stakeAmountFormat: string;
-  totalPrizeamount: string;
-  sort: number;
-  awardType: number;
-  lotteryCondition: unknown;
-  group: unknown;
-}
-
-type PrizeData = Record<string, PrizeRecord[]>;
+import DatabaseModel from "../models/databaseModel";
+import LotteryModel from "../models/lotteryModel";
+import { isEmptyObject } from "../utils/vender";
 
 interface RemoteData {
   drawPdfUrl: string;
@@ -24,7 +11,7 @@ interface RemoteData {
   lotteryDrawResult: string;
   lotteryDrawTime: string;
   totalSaleAmount: string;
-  prizeLevelList: PrizeRecord[];
+  prizeLevelList: Lottery.PrizeRecord[];
 }
 
 interface RemoteP5Data extends RemoteData {
@@ -50,11 +37,15 @@ class FetchRemoteService {
           });
           res.on("end", function () {
             const data = JSON.parse(words).value;
-            resolve(data);
+            if (isEmptyObject(data)) {
+              reject(new Error("No data, please try again later."));
+            } else {
+              resolve(data);
+            }
           });
         })
         .on("error", function (error) {
-          reject(null);
+          reject(error);
         });
     });
   }
@@ -118,11 +109,15 @@ class FeatureService extends FetchRemoteService {
     const delay = this.delay;
 
     async function getData(page: number, result: R[]) {
-      logger.info(`Current Page : ${page}`);
+      logger.warn(`Page: ${page}`);
 
       return new Promise<R[]>(async (resolve, reject) => {
         try {
-          const { pages, pageNo, list } = await request(page);
+          const { pages, pageNo, list } = await request(page).catch(
+            (error: any) => {
+              reject(error);
+            }
+          );
 
           // handle data then append.
           result.push(...list);
@@ -192,48 +187,40 @@ class DataService extends FeatureService {
   }
 
   /**
-   * 将排列三数据写入本地
-   * @param data
-   * @param prize
-   */
-  private async writeP3Data(data: Lottery.LotteryCommonData[], prize: any) {
-    await writeLocalFile(JSON.stringify(data), getPathCWD("/src/lib/p3.json"));
-    await writeLocalFile(
-      JSON.stringify(prize),
-      getPathCWD("/src/lib/p3-prize.json")
-    );
-  }
-
-  /**
    * 获取排列三所有数据
    */
-  async getP3FullData() {
+  async getP3FullData(): Promise<{
+    list: Lottery.LotteryCommonData[];
+    prize: Lottery.PrizeData;
+  }> {
     try {
       const data = await this.requestData(this.fetchP3);
-      const prize: PrizeData = {};
+      const prize: Lottery.PrizeData = {};
       const list = data.map(({ prizeLevelList, ...rest }: RemoteData) => {
         prize[rest.lotteryDrawNum] = prizeLevelList;
         return this.returnPartialP3Data(rest);
       });
-      await this.writeP3Data(list, prize);
-      logger.info("Permutation 3 Data Success!");
+      return { list, prize };
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
   }
 
   /**
    * 获取排列三最新数据
    */
-  async getP3LatestData() {
+  async getP3LatestData(
+    localData: Lottery.LotteryCommonData[] | null,
+    localPrizeData: Lottery.PrizeData | null
+  ): Promise<
+    | {
+        list: Lottery.LotteryCommonData[];
+        prize: Lottery.PrizeData;
+      }
+    | false
+  > {
     try {
       const recentData = await this.requestData(this.fetchP3, 1);
-      const localData = await readLocalData<Lottery.LotteryCommonData[]>(
-        "/src/lib/p3.json"
-      );
-      const localPrizeData = await readLocalData<PrizeData>(
-        "/src/lib/p3-prize.json"
-      );
 
       // update count.
       const latest = [];
@@ -254,15 +241,16 @@ class DataService extends FeatureService {
 
       // log length
       const LatestLength = latest.length;
-      logger.info(`Total ${LatestLength} Permutation 3 data has been updated.`);
+      logger.info(`Total ${LatestLength} P3 data has been updated.`);
 
       // write data
       if (LatestLength > 0 && localData) {
         localData.unshift(...latest);
-        await this.writeP3Data(localData, localPrizeData);
+        return { list: localData, prize: localPrizeData as Lottery.PrizeData };
       }
+      return false;
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
   }
 
@@ -271,7 +259,7 @@ class DataService extends FeatureService {
    * @param {*} data
    * @returns
    */
-  returnPartialP5Data(data: RemoteP5Data): Lottery.LotteryP5Data {
+  private returnPartialP5Data(data: RemoteP5Data): Lottery.LotteryP5Data {
     try {
       const {
         drawPdfUrl,
@@ -309,27 +297,22 @@ class DataService extends FeatureService {
   /**
    * 获取排列五所有数据
    */
-  async getP5FullData() {
+  async getP5FullData(): Promise<Lottery.LotteryP5Data[]> {
     try {
       const data = await this.requestData(this.fetchP5);
       const list = data.map((item) => this.returnPartialP5Data(item));
-      await writeLocalFile(
-        JSON.stringify(list),
-        getPathCWD("/src/lib/p5.json")
-      );
-      logger.info("Permutation 5 Data Success!");
-    } catch (error) {}
+      return list;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
    * 获取排列五最新数据
    */
-  async getP5LatestData() {
+  async getP5LatestData(localData: Lottery.LotteryP5Data[] | null) {
     try {
       const recentData = await this.requestData(this.fetchP5, 1);
-      const localData = await readLocalData<Lottery.LotteryP5Data[]>(
-        "/src/lib/p5.json"
-      );
 
       // update count.
       const latest = [];
@@ -342,18 +325,16 @@ class DataService extends FeatureService {
 
       // log length
       const LatestLength = latest.length;
-      logger.info(`Total ${LatestLength} Permutation 5 data has been updated.`);
+      logger.info(`Total ${LatestLength} P5 data has been updated.`);
 
       // write data
       if (LatestLength > 0 && localData) {
         localData.unshift(...latest);
-        await writeLocalFile(
-          JSON.stringify(localData),
-          getPathCWD("/src/lib/p5.json")
-        );
+        return localData;
       }
+      return false;
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
   }
 
@@ -362,7 +343,9 @@ class DataService extends FeatureService {
    * @param {*} data
    * @returns
    */
-  returnPartialLotteryData(data: RemoteLotteryData): Lottery.LotteryData {
+  private returnPartialLotteryData(
+    data: RemoteLotteryData
+  ): Lottery.LotteryData {
     try {
       const {
         lotteryDrawNum,
@@ -399,27 +382,24 @@ class DataService extends FeatureService {
   /**
    * 获取大乐透所有数据
    */
-  async getLotteryFullData() {
+  async getLotteryFullData(): Promise<Lottery.LotteryData[]> {
     try {
       const data = await this.requestData(this.fetchLottery);
       const list = data.map((item) => this.returnPartialLotteryData(item));
-      await writeLocalFile(
-        JSON.stringify(list),
-        getPathCWD("/src/lib/lottery.json")
-      );
-      logger.info("Lottery Data Success!");
-    } catch (error) {}
+      return list;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
    * 获取大乐透最新数据
    */
-  async getLotteryLatestData() {
+  async getLotteryLatestData(
+    localData: Lottery.LotteryData[] | null
+  ): Promise<Lottery.LotteryData[] | false> {
     try {
       const recentData = await this.requestData(this.fetchLottery, 1);
-      const localData = await readLocalData<Lottery.LotteryData[]>(
-        "/src/lib/lottery.json"
-      );
 
       // update count.
       const latest = [];
@@ -437,13 +417,11 @@ class DataService extends FeatureService {
       // write data
       if (LatestLength > 0 && localData) {
         localData.unshift(...latest);
-        await writeLocalFile(
-          JSON.stringify(localData),
-          getPathCWD("/src/lib/lottery.json")
-        );
+        return localData;
       }
+      return false;
     } catch (error) {
-      logger.error(error);
+      throw error;
     }
   }
 }
@@ -456,13 +434,16 @@ class DatabaseService extends DataService {
   async fetch(type: string): Promise<boolean> {
     switch (type) {
       case "p3":
-        this.getP3FullData();
+        const p3Data = await this.getP3FullData();
+        if (p3Data) await DatabaseModel.writeP3Data(p3Data.list, p3Data.prize);
         break;
       case "p5":
-        this.getP5FullData();
+        const p5Data = await this.getP5FullData();
+        if (p5Data) await DatabaseModel.writeP5Data(p5Data);
         break;
       case "lottery":
-        this.getLotteryFullData();
+        const lotteryData = await this.getLotteryFullData();
+        if (lotteryData) await DatabaseModel.writeLotteryData(lotteryData);
         break;
       default:
         break;
@@ -471,23 +452,40 @@ class DatabaseService extends DataService {
   }
 
   async sync(type: Lottery.LotteryType): Promise<boolean> {
+    const p3LocalData = await LotteryModel.findP3JSONData();
+    const p3LocalPrizeData = await LotteryModel.findP3PrizeData();
+    const p5LocalData = await LotteryModel.findP5JSONData();
+    const lotteryLocalData = await LotteryModel.findLotteryJSONData();
+
     // 更新所有数据
     if (type === undefined) {
-      this.getP3LatestData();
-      this.getP5LatestData();
-      this.getLotteryLatestData();
+      const p3Data = await this.getP3LatestData(p3LocalData, p3LocalPrizeData);
+      if (p3Data) await DatabaseModel.writeP3Data(p3Data.list, p3Data.prize);
+
+      const p5Data = await this.getP5LatestData(p5LocalData);
+      if (p5Data) await DatabaseModel.writeP5Data(p5Data);
+
+      const lotteryData = await this.getLotteryLatestData(lotteryLocalData);
+      if (lotteryData) await DatabaseModel.writeLotteryData(lotteryData);
+
       return true;
     }
 
     switch (type) {
       case "p3":
-        this.getP3LatestData();
+        const p3Data = await this.getP3LatestData(
+          p3LocalData,
+          p3LocalPrizeData
+        );
+        if (p3Data) await DatabaseModel.writeP3Data(p3Data.list, p3Data.prize);
         break;
       case "p5":
-        this.getP5LatestData();
+        const p5Data = await this.getP5LatestData(p5LocalData);
+        if (p5Data) await DatabaseModel.writeP5Data(p5Data);
         break;
       case "lottery":
-        this.getLotteryLatestData();
+        const lotteryData = await this.getLotteryLatestData(lotteryLocalData);
+        if (lotteryData) await DatabaseModel.writeLotteryData(lotteryData);
         break;
       default:
         break;

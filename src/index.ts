@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import insertRoutes from "./routes";
 import logger from "./utils/logger";
+import path from "path";
 
 // 加载环境变量
 dotenv.config();
@@ -24,8 +25,15 @@ app.use(express.urlencoded({ extended: true }));
 // 日志中间件
 app.use(morgan("dev"));
 
+// 静态文件
+app.use(express.static("public"));
+
 // API
 insertRoutes(app);
+
+app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // 全局错误处理中间件
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

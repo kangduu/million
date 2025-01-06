@@ -30,11 +30,11 @@ class DatabaseController {
     const success = await this.databaseService.sync(type);
     if (success) {
       res.status(200).json({
-        message: "data updated success",
+        message: `${type || ""} data updated success`,
       });
     } else {
       res.status(500).json({
-        message: "data updated failed",
+        message: `${type || ""} data updated failed`,
       });
     }
   }

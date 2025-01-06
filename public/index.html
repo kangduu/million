@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lottery Service</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #app {
+        width: 100%;
+        height: 100%;
+      }
+
+      .content {
+        width: 1260px;
+        margin: 10px auto;
+        padding: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+      }
+
+      .card {
+        width: fit-content;
+        height: fit-content;
+        padding: 16px;
+        background-color: #fff;
+        border-radius: 6px;
+      }
+      .card h2 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .card h2::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 1px;
+        border-bottom: 1px dashed #000;
+        position: relative;
+        top: -12px;
+        left: 0;
+        z-index: 0;
+      }
+
+      button {
+        padding: 6px 8px;
+        border: none;
+        border-radius: 6px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      button:not(.update-all):hover {
+        background-color: rgba(0, 123, 255, 0.6);
+      }
+      .update-all {
+        background-color: #ff6600;
+        color: #fff;
+      }
+      .update-all:hover {
+        background-color: rgba(255, 102, 0, 0.6);
+      }
+
+      /* 登录 */
+      .login {
+        margin-bottom: 20px;
+      }
+      .login input {
+        margin: 10px 0;
+        padding: 6px 8px;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        color: #000;
+      }
+      .login input:focus {
+        outline: none;
+      }
+      .login label {
+        display: inline-block;
+        min-width: 3em;
+        text-align: center;
+        margin-right: 10px;
+      }
+      .login button {
+        margin-top: 10px;
+        width: 100%;
+      }
+      .login-item {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #000;
+        padding: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app">
+      <section class="content">
+        <div id="login-form" class="login card">
+          <h2>登录</h2>
+          <div class="login-item">
+            <label for="username">用户名</label>
+            <input
+              autocomplete="off"
+              type="text"
+              id="username"
+              placeholder="请输入用户名"
+              value="admin"
+            />
+          </div>
+          <div class="login-item">
+            <label for="password">密码</label>
+            <input
+              autocomplete="off"
+              type="password"
+              id="password"
+              placeholder="请输入密码"
+              value="123456"
+            />
+          </div>
+          <button id="login-button">登录</button>
+        </div>
+
+        <div class="update-data card">
+          <h2>更新数据</h2>
+          <div id="update-buttons">
+            <button data-lottery-type="p3">更新排列三数据</button>
+            <button data-lottery-type="p5">更新排列五数据</button>
+            <button data-lottery-type="lottery">更新大乐透数据</button>
+            <button data-lottery-type="all" class="update-all">
+              更新所有数据
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>

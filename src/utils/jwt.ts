@@ -30,30 +30,6 @@ function generateToken(username: string) {
 }
 
 /**
- * 验证token
- * @param token token
- * @returns token payload
- */
-async function verifyToken(token: string) {
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
-
-    // 检查token是否在redis中存在且有效
-    // const isValid = await redisClient.get(
-    //   `token:${decoded.username}:${decoded.tokenId}`
-    // );
-
-    if (!token) {
-      throw new Error("Token has been revoked");
-    }
-
-    return decoded;
-  } catch (error) {
-    throw error;
-  }
-}
-
-/**
  * 登出/注销token
  * @param token token
  */
@@ -62,4 +38,4 @@ async function revokeToken(token: string) {
   await redisClient.del(`token:${decoded.username}:${decoded.tokenId}`);
 }
 
-export { generateToken, verifyToken, revokeToken };
+export { generateToken, revokeToken };
