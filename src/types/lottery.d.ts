@@ -20,4 +20,18 @@ declare namespace Lottery {
     pool: string;
     order: string;
   }
+
+  interface PrizeRecord {
+    prizeLevel: string;
+    stakeCount: string;
+    stakeAmount: string;
+    stakeAmountFormat: string;
+    totalPrizeamount: string;
+    sort: number;
+    awardType: number;
+    lotteryCondition: unknown;
+    group: unknown;
+  }
+
+  type PrizeData = Record<string, PrizeRecord[]>;
 }
