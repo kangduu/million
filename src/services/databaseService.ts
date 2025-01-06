@@ -3,6 +3,7 @@ import logger from "../utils/logger";
 import readLocalData from "../utils/local";
 import DatabaseModel from "../models/databaseModel";
 import LotteryModel from "../models/lotteryModel";
+import { isEmptyObject } from "../utils/vender";
 
 interface RemoteData {
   drawPdfUrl: string;
@@ -36,11 +37,15 @@ class FetchRemoteService {
           });
           res.on("end", function () {
             const data = JSON.parse(words).value;
-            resolve(data);
+            if (isEmptyObject(data)) {
+              reject(new Error("No data, please try again later."));
+            } else {
+              resolve(data);
+            }
           });
         })
         .on("error", function (error) {
-          reject(null);
+          reject(error);
         });
     });
   }
@@ -104,11 +109,15 @@ class FeatureService extends FetchRemoteService {
     const delay = this.delay;
 
     async function getData(page: number, result: R[]) {
-      logger.info(`Current Page : ${page}`);
+      logger.warn(`Page: ${page}`);
 
       return new Promise<R[]>(async (resolve, reject) => {
         try {
-          const { pages, pageNo, list } = await request(page);
+          const { pages, pageNo, list } = await request(page).catch(
+            (error: any) => {
+              reject(error);
+            }
+          );
 
           // handle data then append.
           result.push(...list);

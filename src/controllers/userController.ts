@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../services/userService";
 import { generateToken } from "../utils/jwt";
+import dayjs from "dayjs";
 
 class UserController {
   private userService: UserService;
@@ -9,16 +10,26 @@ class UserController {
     this.userService = new UserService();
   }
 
-
   async login(req: Request, res: Response) {
-    const { username, passwd } = req.body;
+    const { username, password } = req.body;
     // todo 查询数据库, 判断用户名和密码是否正确
-    if (username === "admin" && passwd === "123456") {
+    if (username === "admin" && password === "123456") {
       // todo 用户信息，id 等
       const user = await this.userService.getUserByUsername(username);
+
       // todo 保存token到数据库, 并返回token
       const token = generateToken(username);
-      res.json({ token, user });
+
+      // 过期时间
+      const expired_at = dayjs().add(1, "days").format("YYYY-MM-DD HH:mm:ss");
+
+      res
+        .status(200)
+        .json({
+          code: 200,
+          message: "登录成功",
+          data: { token, user, expired_at },
+        });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }
@@ -34,4 +45,4 @@ class UserController {
   }
 }
 
-export default  new  UserController();
+export default new UserController();
