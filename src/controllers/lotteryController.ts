@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import LotteryService from "../services/lotteryService";
-import { verifyToken } from "../utils/jwt";
 import logger from "../utils/logger";
 
 class LotteryController {
@@ -12,14 +11,6 @@ class LotteryController {
 
   async getList(req: Request, res: Response) {
     try {
-      const token = req.headers.authorization;
-      try {
-        await verifyToken(token || "");
-      } catch (error) {
-        res.status(401).json({ error: "Unauthorized. token is invalid" });
-        return;
-      }
-
       const page = req.body.page;
       const pagesize = req.body.pagesize;
       const type = req.body.type;
