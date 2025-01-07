@@ -36,7 +36,8 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pino": "^9.5.0",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "svg-captcha": "^1.4.0"
   },
   "engines": {
     "node": ">=18.0.0",
