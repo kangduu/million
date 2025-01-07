@@ -29,6 +29,7 @@
         padding: 16px;
         background-color: #fff;
         border-radius: 6px;
+        margin-bottom: 10px;
       }
       .card h2 {
         text-align: center;
@@ -86,20 +87,28 @@
       .login label {
         display: inline-block;
         min-width: 3em;
-        text-align: center;
+        /* text-align: center; */
         margin-right: 10px;
       }
       .login button {
         margin-top: 10px;
         width: 100%;
       }
-      .login-item {
+      .login .login-item {
         margin-bottom: 10px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         border-bottom: 1px solid #000;
-        padding: 0 10px;
+        /* padding: 0 10px; */
+      }
+      .login .login-item input {
+        flex: 1;
+      }
+      #captcha-img {
+        cursor: pointer;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        overflow: hidden;
       }
     </style>
   </head>
@@ -115,7 +124,6 @@
               type="text"
               id="username"
               placeholder="请输入用户名"
-              value="admin"
             />
           </div>
           <div class="login-item">
@@ -125,13 +133,20 @@
               type="password"
               id="password"
               placeholder="请输入密码"
-              value="123456"
             />
+          </div>
+          <div class="login-item">
+            <input type="text" id="captcha" placeholder="请输入验证码" />
+            <img id="captcha-img" src="" alt="验证码" title="点击切换" />
           </div>
           <button id="login-button">登录</button>
         </div>
 
-        <div class="update-data card">
+        <div class="card" id="logout">
+          <button id="logout-button">退出登录</button>
+        </div>
+
+        <div id="updates" class="update-data card">
           <h2>更新数据</h2>
           <div id="update-buttons">
             <button data-lottery-type="p3">更新排列三数据</button>
