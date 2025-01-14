@@ -1,29 +1,28 @@
 ## 关于本项目的说明
 
-主要功能包括：
+使用 [Node.js](https://nodejs.org/en/learn/getting-started/introduction-to-nodejs) 和 [Express](https://expressjs.com/en/starter/installing.html) + [Typescript](https://www.typescriptlang.org/docs/handbook/intro.html) 编写服务代码；
 
-1. 登录功能：JWT 验证、登录 Code 码验证
-2. 彩票数据（保存本地 json 格式）：获取彩票数据（所有数据和更新最新数据），支持通知，支持数据导出，
-3. websocket 实现实时通知
-4. Chart 图表功能：使用 `ECharts` 实现图表功能
-5. 文件操作：文件上传、文件下载、大文件操作、多文件操作等s
-6. ......
-7.
+使用 [Jest](https://jestjs.io/docs/getting-started) 编写测试代码；
 
-~~使用 `Webpack@5` + `React@19` + `Typescript@5` + `Node.js@20` + `Express@4` 技术，实现 React SSR 。~~
+使用 [Prettier](https://prettier.io/docs/en/) + [ESlint](https://eslint.org/docs/latest/use/getting-started) 来规范代码。
 
-主要学习以下知识点：
+尝试使用 [React SSR](https://zh-hans.react.dev/reference/rsc/server-components) 来实现服务端渲染；
 
-1. 使用 `Express` 搭建 `Node.js` 服务
-2. 使用 `Typescript` 编写 `Node.js` 项目
-3. ~~使用 `Webpack` 打包 `React SSR` 项目~~
-4. ~~使用 `React Router` 实现前端路由~~
-5. ~~使用 `React Hooks` 实现组件逻辑~~
-6. ~~使用 `React Context` 实现组件状态管理~~
-7. ~~使用 `React Redux` 实现全局状态管理~~
-8. ~~使用 `React Suspense` 实现组件懒加载~~
-9. ~~使用 `React Error Boundaries` 实现组件错误处理~~
-10. ~~使用 `React Portals` 实现组件弹出层~~
+尝试使用 [Webpack](https://webpack.docschina.org/concepts/) 来构建应用；
+
+### 主要功能包括：
+
+- [x] 登录功能：JWT 验证、登录 Code 码验证
+- [x] 彩票数据（保存本地 json 格式）：获取彩票数据（所有数据和更新最新数据），
+- [ ] SSR Implementation.
+- [ ] 彩票数据支持通知，支持数据导出，
+- [ ] websocket 实现实时通知
+- [ ] Chart 图表功能：使用 `ECharts` 实现图表功能
+- [ ] 文件操作：文件上传、文件下载、大文件操作、多文件操作等
+
+### 其它关键词
+
+`React Portals` `React Error Boundaries` `React Suspense` `React Redux` `React Context` `React Hooks` `React Router`
 
 ## Client Code
 
